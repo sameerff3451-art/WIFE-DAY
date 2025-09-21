@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kritika ka Surprise Gift 🎁</title>
+  <style>
+    body{margin:0;font-family:sans-serif;background:#ffdde1;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;overflow:hidden}
+    #gift{display:none;font-size:22px;color:#ff4d6d;margin-top:20px}
+    button{background:#ff4d6d;color:#fff;padding:12px 20px;border:none;border-radius:8px;font-size:16px;cursor:pointer}
+    canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+  </style>
+</head>
+<body>
+  <h1>🎉 Kritika, Tumhaara Surprise 🎉</h1>
+  <p>Pyaar ke saath ek chhoti si gift sirf tumhare liye...</p>
+  
+  <button onclick="showGift()">Reveal Gift 🎁</button>
+  
+  <div id="gift">
+    Google Play Code:<br>
+    <strong>KC960FX9S8EN96HV</strong>
+  </div>
+
+  <canvas id="confetti"></canvas>
+
+  <script>
+    function showGift(){
+      document.getElementById("gift").style.display="block";
+      startConfetti();
+      setTimeout(stopConfetti, 5000); // 5 sec confetti
+    }
+
+    // Simple Confetti JS
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    let W, H;
+    function resizeCanvas(){
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    let particles = [];
+    function randomColor(){
+      const colors = ["#ff4d6d","#ffdd59","#1dd1a1","#54a0ff","#f368e0"];
+      return colors[Math.floor(Math.random()*colors.length)];
+    }
+    function createParticles(count){
+      for(let i=0;i<count;i++){
+        particles.push({
+          x: Math.random()*W,
+          y: Math.random()*H - H,
+          r: Math.random()*8+2,
+          d: Math.random()*W,
+          color: randomColor(),
+          tilt: Math.floor(Math.random()*10)-10
+        });
+      }
+    }
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      for(let i=0;i<particles.length;i++){
+        let p = particles[i];
+        ctx.beginPath();
+        ctx.lineWidth = p.r;
+        ctx.strokeStyle = p.color;
+        ctx.moveTo(p.x+p.tilt+ p.r, p.y);
+        ctx.lineTo(p.x+p.tilt, p.y + p.tilt + p.r);
+        ctx.stroke();
+      }
+      update();
+    }
+    function update(){
+      for(let i=0;i<particles.length;i++){
+        let p = particles[i];
+        p.y += Math.cos(p.d)+1+p.r/2;
+        p.x += Math.sin(p.d);
+        if(p.y > H){
+          p.x = Math.random()*W;
+          p.y = -10;
+        }
+      }
+    }
+    let confettiTimer;
+    function startConfetti(){
+      createParticles(150);
+      confettiTimer = setInterval(draw,20);
+    }
+    function stopConfetti(){
+      clearInterval(confettiTimer);
+      ctx.clearRect(0,0,W,H);
+      particles = [];
+    }
+  </script>
+</body>
+</html>
